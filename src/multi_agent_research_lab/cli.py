@@ -1,5 +1,6 @@
 """Command-line entrypoint for the lab starter."""
 
+import json
 import time
 from pathlib import Path
 from typing import Annotated
@@ -126,6 +127,52 @@ def benchmark(
     report = render_markdown_report([metrics_baseline, metrics_multi])
     output.write_text(report)
     console.print(f"[green]Report saved to {output}[/green]")
+
+
+@app.command()
+def trace(
+    query: Annotated[str, typer.Option("--query", "-q", help="Research query")],
+    output: Annotated[Path, typer.Option("--output", "-o")] = Path("reports/trace_sample.json"),
+) -> None:
+    """Chạy multi-agent và export toàn bộ trace ra JSON."""
+    _init()
+    state = ResearchState(request=ResearchQuery(query=query))
+    result = MultiAgentWorkflow().run(state)
+
+    report = {
+        "query": query,
+        "route_history": result.route_history,
+        "iterations": result.iteration,
+        "trace": result.trace,
+        "agent_results": [
+            {
+                "agent": r.agent,
+                "input_tokens": r.metadata.get("input_tokens"),
+                "output_tokens": r.metadata.get("output_tokens"),
+                "preview": r.content[:200] + "..." if len(r.content) > 200 else r.content,
+            }
+            for r in result.agent_results
+        ],
+        "errors": result.errors,
+        "sources_count": len(result.sources),
+    }
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    console.print(f"[green]Trace saved to {output}[/green]")
+
+    # In tóm tắt ra terminal
+    table = Table(title="Trace Summary")
+    table.add_column("Step")
+    table.add_column("Agent")
+    table.add_column("Event")
+    table.add_column("Detail")
+    for i, event in enumerate(result.trace, 1):
+        payload = event["payload"]
+        detail = ", ".join(f"{k}={v}" for k, v in payload.items())
+        agent = payload.get("route", event["name"].replace("_routed", "").replace("_done", ""))
+        table.add_row(str(i), agent, event["name"], detail)
+    console.print(table)
 
 
 if __name__ == "__main__":

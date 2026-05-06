@@ -1,0 +1,76 @@
+{
+  "query": "What is GraphRAG and why does it matter?",
+  "route_history": [
+    "researcher",
+    "analyst",
+    "writer",
+    "done"
+  ],
+  "iterations": 4,
+  "trace": [
+    {
+      "name": "supervisor_routed",
+      "payload": {
+        "route": "researcher",
+        "iteration": 1
+      }
+    },
+    {
+      "name": "researcher_done",
+      "payload": {
+        "sources": 3
+      }
+    },
+    {
+      "name": "supervisor_routed",
+      "payload": {
+        "route": "analyst",
+        "iteration": 2
+      }
+    },
+    {
+      "name": "analyst_done",
+      "payload": {}
+    },
+    {
+      "name": "supervisor_routed",
+      "payload": {
+        "route": "writer",
+        "iteration": 3
+      }
+    },
+    {
+      "name": "writer_done",
+      "payload": {}
+    },
+    {
+      "name": "supervisor_routed",
+      "payload": {
+        "route": "done",
+        "iteration": 4
+      }
+    }
+  ],
+  "agent_results": [
+    {
+      "agent": "researcher",
+      "input_tokens": 195,
+      "output_tokens": 141,
+      "preview": "- **Definition**: GraphRAG (Graph-based Retrieval-Augmented Generation) is an evolving framework in AI that enhances accuracy and contextual understanding in systems [1].\n  \n- **Techniques**:\n  - Util..."
+    },
+    {
+      "agent": "analyst",
+      "input_tokens": 218,
+      "output_tokens": 175,
+      "preview": "1. **Key Claims**:\n   - GraphRAG is an evolving framework that enhances the accuracy and contextual understanding of AI systems.\n   - It significantly improves information retrieval, generation accura..."
+    },
+    {
+      "agent": "writer",
+      "input_tokens": 381,
+      "output_tokens": 592,
+      "preview": "**What is GraphRAG and Why Does It Matter?**\n\nGraphRAG, or Graph-based Retrieval-Augmented Generation, represents an innovative framework within the landscape of artificial intelligence (AI) designed ..."
+    }
+  ],
+  "errors": [],
+  "sources_count": 3
+}
